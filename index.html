@@ -3,640 +3,580 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Liver Function Test Simulator - Educational Tool</title>
+    <title>Liver Function Test Simulator</title>
     <style>
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
         }
-
+        
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            min-height: 100vh;
             padding: 20px;
+            min-height: 100vh;
         }
-
+        
         .container {
             max-width: 1200px;
             margin: 0 auto;
             background: white;
-            border-radius: 20px;
+            border-radius: 15px;
             box-shadow: 0 20px 60px rgba(0,0,0,0.3);
-            overflow: hidden;
-        }
-
-        .header {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
             padding: 30px;
+        }
+        
+        .header {
             text-align: center;
+            margin-bottom: 30px;
+            border-bottom: 3px solid #667eea;
+            padding-bottom: 20px;
         }
-
-        .header h1 {
-            font-size: 2.5em;
+        
+        .copyright {
+            font-size: 12px;
+            color: #666;
             margin-bottom: 10px;
-            text-shadow: 2px 2px 4px rgba(0,0,0,0.2);
         }
-
-        .header p {
-            font-size: 1.1em;
-            opacity: 0.95;
+        
+        h1 {
+            color: #333;
+            margin-bottom: 10px;
         }
-
+        
+        .subtitle {
+            color: #666;
+            font-size: 14px;
+        }
+        
         .content {
             display: grid;
-            grid-template-columns: 1fr 1fr;
+            grid-template-columns: 2fr 1fr;
             gap: 30px;
-            padding: 30px;
+            margin-bottom: 20px;
         }
-
-        @media (max-width: 768px) {
-            .content {
-                grid-template-columns: 1fr;
-            }
-        }
-
+        
         .test-panel {
             background: #f8f9fa;
-            border-radius: 15px;
-            padding: 25px;
+            padding: 20px;
+            border-radius: 10px;
         }
-
-        .test-panel h2 {
-            color: #333;
-            margin-bottom: 20px;
-            font-size: 1.5em;
-            border-bottom: 3px solid #667eea;
-            padding-bottom: 10px;
-        }
-
+        
         .test-item {
             margin-bottom: 25px;
-            background: white;
             padding: 15px;
-            border-radius: 10px;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
         }
-
+        
         .test-header {
             display: flex;
             justify-content: space-between;
             align-items: center;
             margin-bottom: 10px;
         }
-
+        
         .test-name {
             font-weight: bold;
             color: #333;
-            font-size: 1.1em;
         }
-
+        
         .test-value {
-            font-size: 1.2em;
+            font-size: 18px;
             font-weight: bold;
             padding: 5px 15px;
-            border-radius: 20px;
-            transition: all 0.3s ease;
+            border-radius: 5px;
+            min-width: 100px;
+            text-align: center;
         }
-
+        
         .normal {
-            background: #28a745;
-            color: white;
+            background: #d4edda;
+            color: #155724;
         }
-
-        .abnormal-high {
-            background: #dc3545;
-            color: white;
+        
+        .abnormal {
+            background: #f8d7da;
+            color: #721c24;
         }
-
-        .abnormal-low {
-            background: #ffc107;
-            color: #333;
-        }
-
+        
         .slider-container {
-            position: relative;
             margin-top: 10px;
         }
-
-        .slider {
+        
+        input[type="range"] {
             width: 100%;
             height: 8px;
             border-radius: 5px;
             background: #ddd;
             outline: none;
             -webkit-appearance: none;
-            cursor: pointer;
         }
-
-        .slider::-webkit-slider-thumb {
+        
+        input[type="range"]::-webkit-slider-thumb {
             -webkit-appearance: none;
             appearance: none;
-            width: 25px;
-            height: 25px;
+            width: 20px;
+            height: 20px;
             border-radius: 50%;
             background: #667eea;
             cursor: pointer;
-            box-shadow: 0 2px 10px rgba(102, 126, 234, 0.5);
-            transition: transform 0.2s;
         }
-
-        .slider::-webkit-slider-thumb:hover {
-            transform: scale(1.2);
-        }
-
-        .slider::-moz-range-thumb {
-            width: 25px;
-            height: 25px;
+        
+        input[type="range"]::-moz-range-thumb {
+            width: 20px;
+            height: 20px;
             border-radius: 50%;
             background: #667eea;
             cursor: pointer;
-            box-shadow: 0 2px 10px rgba(102, 126, 234, 0.5);
+            border: none;
         }
-
-        .range-labels {
-            display: flex;
-            justify-content: space-between;
+        
+        .reference-range {
+            font-size: 12px;
+            color: #666;
             margin-top: 5px;
-            font-size: 0.85em;
-            color: #666;
         }
-
-        .results-panel {
+        
+        .interpretation-panel {
             background: #f8f9fa;
-            border-radius: 15px;
-            padding: 25px;
-        }
-
-        .results-panel h2 {
-            color: #333;
-            margin-bottom: 20px;
-            font-size: 1.5em;
-            border-bottom: 3px solid #764ba2;
-            padding-bottom: 10px;
-        }
-
-        .differential-list {
-            list-style: none;
-        }
-
-        .differential-item {
-            background: white;
-            margin-bottom: 15px;
-            padding: 15px;
+            padding: 20px;
             border-radius: 10px;
-            border-left: 4px solid #764ba2;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
-            animation: slideIn 0.5s ease;
+            position: sticky;
+            top: 20px;
         }
-
-        @keyframes slideIn {
-            from {
-                opacity: 0;
-                transform: translateX(20px);
-            }
-            to {
-                opacity: 1;
-                transform: translateX(0);
-            }
+        
+        .interpretation-panel h2 {
+            color: #333;
+            margin-bottom: 15px;
+            font-size: 20px;
         }
-
-        .differential-item h3 {
-            color: #764ba2;
-            margin-bottom: 8px;
-            font-size: 1.2em;
+        
+        .diagnosis-box {
+            background: white;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 15px;
+            border-left: 4px solid #667eea;
         }
-
-        .differential-item p {
-            color: #666;
-            line-height: 1.6;
+        
+        .diagnosis-title {
+            font-weight: bold;
+            color: #667eea;
+            margin-bottom: 10px;
         }
-
-        .reset-button {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        
+        .diagnosis-list {
+            list-style: none;
+            padding-left: 0;
+        }
+        
+        .diagnosis-list li {
+            padding: 8px 0;
+            color: #555;
+            border-bottom: 1px solid #eee;
+        }
+        
+        .diagnosis-list li:last-child {
+            border-bottom: none;
+        }
+        
+        .reset-btn {
+            background: #667eea;
             color: white;
             border: none;
             padding: 12px 30px;
-            font-size: 1.1em;
-            border-radius: 25px;
+            border-radius: 8px;
             cursor: pointer;
-            margin-top: 20px;
-            transition: transform 0.3s;
-            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
+            font-size: 16px;
+            width: 100%;
+            margin-top: 15px;
+            transition: background 0.3s;
         }
-
-        .reset-button:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 6px 20px rgba(102, 126, 234, 0.4);
+        
+        .reset-btn:hover {
+            background: #5568d3;
         }
-
-        .footer {
-            background: #333;
-            color: white;
+        
+        .disclaimer {
             text-align: center;
             padding: 20px;
-            font-size: 0.9em;
-        }
-
-        .footer a {
-            color: #667eea;
-            text-decoration: none;
-        }
-
-        .disclaimer {
             background: #fff3cd;
-            border: 1px solid #ffc107;
+            border: 2px solid #ffc107;
             border-radius: 10px;
-            padding: 15px;
-            margin: 20px;
+            margin-top: 20px;
+        }
+        
+        .disclaimer-title {
+            font-weight: bold;
             color: #856404;
+            margin-bottom: 10px;
+        }
+        
+        .disclaimer-text {
+            color: #856404;
+            font-size: 14px;
+            line-style: italic;
         }
 
-        .disclaimer h3 {
-            margin-bottom: 10px;
-            color: #856404;
+        @media (max-width: 768px) {
+            .content {
+                grid-template-columns: 1fr;
+            }
+            
+            .interpretation-panel {
+                position: relative;
+            }
         }
     </style>
 </head>
 <body>
     <div class="container">
         <div class="header">
+            <div class="copyright">© 2025 Deeksha Sikri</div>
             <h1>🔬 Liver Function Test Simulator</h1>
-            <p>Interactive Educational Tool for Medical Students</p>
+            <p class="subtitle">Interactive Learning Tool for Year 1 Medical Students</p>
         </div>
-
-        <div class="disclaimer">
-            <h3>⚠️ Educational Disclaimer</h3>
-            <p>This simulator is designed for educational purposes only and should not be used for clinical decision-making. 
-            Always consult current medical literature and guidelines for patient care. 
-            This exercise has been created with Claude AI for educational purposes only.</p>
-        </div>
-
+        
         <div class="content">
             <div class="test-panel">
-                <h2>Adjust Laboratory Values</h2>
+                <h2 style="margin-bottom: 20px; color: #333;">Laboratory Parameters</h2>
                 
+                <!-- ALT -->
                 <div class="test-item">
                     <div class="test-header">
                         <span class="test-name">ALT (Alanine Aminotransferase)</span>
-                        <span class="test-value" id="alt-value">40 U/L</span>
+                        <span class="test-value" id="alt-value">30 U/L</span>
                     </div>
                     <div class="slider-container">
-                        <input type="range" min="5" max="3000" value="40" class="slider" id="alt-slider">
-                        <div class="range-labels">
-                            <span>5 U/L</span>
-                            <span>Normal: 7-55 U/L (M)</span>
-                            <span>3000 U/L</span>
-                        </div>
+                        <input type="range" id="alt-slider" min="0" max="500" value="30" step="5">
+                        <div class="reference-range">Reference: Males 7-55 U/L, Females 7-45 U/L</div>
                     </div>
                 </div>
-
+                
+                <!-- AST -->
                 <div class="test-item">
                     <div class="test-header">
                         <span class="test-name">AST (Aspartate Aminotransferase)</span>
-                        <span class="test-value" id="ast-value">35 U/L</span>
+                        <span class="test-value" id="ast-value">25 U/L</span>
                     </div>
                     <div class="slider-container">
-                        <input type="range" min="5" max="3000" value="35" class="slider" id="ast-slider">
-                        <div class="range-labels">
-                            <span>5 U/L</span>
-                            <span>Normal: 8-48 U/L (M)</span>
-                            <span>3000 U/L</span>
-                        </div>
+                        <input type="range" id="ast-slider" min="0" max="500" value="25" step="5">
+                        <div class="reference-range">Reference: Males 8-48 U/L, Females 8-43 U/L</div>
                     </div>
                 </div>
-
+                
+                <!-- Alkaline Phosphatase -->
                 <div class="test-item">
                     <div class="test-header">
                         <span class="test-name">Alkaline Phosphatase (ALP)</span>
-                        <span class="test-value" id="alp-value">90 U/L</span>
+                        <span class="test-value" id="alp-value">80 U/L</span>
                     </div>
                     <div class="slider-container">
-                        <input type="range" min="20" max="1000" value="90" class="slider" id="alp-slider">
-                        <div class="range-labels">
-                            <span>20 U/L</span>
-                            <span>Normal: 40-129 U/L (M)</span>
-                            <span>1000 U/L</span>
-                        </div>
+                        <input type="range" id="alp-slider" min="0" max="400" value="80" step="5">
+                        <div class="reference-range">Reference: Males 40-129 U/L, Females 35-104 U/L</div>
                     </div>
                 </div>
-
+                
+                <!-- Total Bilirubin -->
                 <div class="test-item">
                     <div class="test-header">
                         <span class="test-name">Total Bilirubin</span>
-                        <span class="test-value" id="bili-value">1.0 mg/dL</span>
+                        <span class="test-value" id="bilirubin-value">0.8 mg/dL</span>
                     </div>
                     <div class="slider-container">
-                        <input type="range" min="0.1" max="30" step="0.1" value="1.0" class="slider" id="bili-slider">
-                        <div class="range-labels">
-                            <span>0.1 mg/dL</span>
-                            <span>Normal: ≤1.2 mg/dL</span>
-                            <span>30 mg/dL</span>
-                        </div>
+                        <input type="range" id="bilirubin-slider" min="0" max="20" value="0.8" step="0.1">
+                        <div class="reference-range">Reference: ≤ 1.2 mg/dL</div>
                     </div>
                 </div>
-
+                
+                <!-- Direct Bilirubin -->
                 <div class="test-item">
                     <div class="test-header">
                         <span class="test-name">Direct Bilirubin</span>
-                        <span class="test-value" id="dbili-value">0.2 mg/dL</span>
+                        <span class="test-value" id="direct-bili-value">0.2 mg/dL</span>
                     </div>
                     <div class="slider-container">
-                        <input type="range" min="0" max="25" step="0.1" value="0.2" class="slider" id="dbili-slider">
-                        <div class="range-labels">
-                            <span>0 mg/dL</span>
-                            <span>Normal: 0-0.3 mg/dL</span>
-                            <span>25 mg/dL</span>
-                        </div>
+                        <input type="range" id="direct-bili-slider" min="0" max="10" value="0.2" step="0.1">
+                        <div class="reference-range">Reference: 0.0-0.3 mg/dL</div>
                     </div>
                 </div>
-
+                
+                <!-- Albumin -->
                 <div class="test-item">
                     <div class="test-header">
                         <span class="test-name">Albumin</span>
                         <span class="test-value" id="albumin-value">4.0 g/dL</span>
                     </div>
                     <div class="slider-container">
-                        <input type="range" min="1.0" max="6.0" step="0.1" value="4.0" class="slider" id="albumin-slider">
-                        <div class="range-labels">
-                            <span>1.0 g/dL</span>
-                            <span>Normal: 3.5-5.0 g/dL</span>
-                            <span>6.0 g/dL</span>
-                        </div>
+                        <input type="range" id="albumin-slider" min="1" max="6" value="4.0" step="0.1">
+                        <div class="reference-range">Reference: 3.5-5.0 g/dL</div>
                     </div>
                 </div>
-
+                
+                <!-- Total Protein -->
                 <div class="test-item">
                     <div class="test-header">
-                        <span class="test-name">GGT (Gamma-glutamyltranspeptidase)</span>
-                        <span class="test-value" id="ggt-value">40 U/L</span>
+                        <span class="test-name">Total Protein</span>
+                        <span class="test-value" id="protein-value">7.0 g/dL</span>
                     </div>
                     <div class="slider-container">
-                        <input type="range" min="5" max="600" value="40" class="slider" id="ggt-slider">
-                        <div class="range-labels">
-                            <span>5 U/L</span>
-                            <span>Normal: 8-61 U/L (M)</span>
-                            <span>600 U/L</span>
-                        </div>
+                        <input type="range" id="protein-slider" min="3" max="10" value="7.0" step="0.1">
+                        <div class="reference-range">Reference: 6.0-8.5 g/dL</div>
                     </div>
                 </div>
-
-                <button class="reset-button" onclick="resetValues()">Reset All Values</button>
-            </div>
-
-            <div class="results-panel">
-                <h2>Differential Diagnosis</h2>
-                <div id="differential-diagnosis">
-                    <ul class="differential-list">
-                        <li class="differential-item">
-                            <h3>Normal Liver Function</h3>
-                            <p>All values are within normal limits. No evidence of hepatocellular injury, cholestasis, or synthetic dysfunction.</p>
-                        </li>
-                    </ul>
+                
+                <!-- GGT -->
+                <div class="test-item">
+                    <div class="test-header">
+                        <span class="test-name">GGT (Gamma-Glutamyl Transferase)</span>
+                        <span class="test-value" id="ggt-value">30 U/L</span>
+                    </div>
+                    <div class="slider-container">
+                        <input type="range" id="ggt-slider" min="0" max="300" value="30" step="5">
+                        <div class="reference-range">Reference: Males 8-61 U/L, Females 5-36 U/L</div>
+                    </div>
                 </div>
             </div>
+            
+            <div class="interpretation-panel">
+                <h2>🔍 Clinical Interpretation</h2>
+                
+                <div class="diagnosis-box">
+                    <div class="diagnosis-title">Pattern Analysis</div>
+                    <div id="pattern-analysis">All values within normal limits</div>
+                </div>
+                
+                <div class="diagnosis-box">
+                    <div class="diagnosis-title">Differential Diagnosis</div>
+                    <ul class="diagnosis-list" id="differential-list">
+                        <li>No abnormalities detected</li>
+                    </ul>
+                </div>
+                
+                <div class="diagnosis-box">
+                    <div class="diagnosis-title">Key Ratios</div>
+                    <div id="ratios">
+                        <div style="margin-bottom: 8px;">AST/ALT Ratio: <strong id="ast-alt-ratio">0.83</strong></div>
+                        <div>Direct/Total Bilirubin: <strong id="bili-ratio">25%</strong></div>
+                    </div>
+                </div>
+                
+                <button class="reset-btn" onclick="resetValues()">Reset to Normal</button>
+            </div>
         </div>
-
-        <div class="footer">
-            <p>© 2024 <strong>Deeksha Sikri</strong> | Created with Claude AI for Educational Purposes Only</p>
-            <p>Based on Essential Laboratory Tests for Medical Education (ELTME)</p>
+        
+        <div class="disclaimer">
+            <div class="disclaimer-title">⚠️ DISCLAIMER</div>
+            <div class="disclaimer-text">
+                This liver function test simulator was created by AI for educational purposes only. 
+                It is designed as a learning tool for Year 1 medical students and should not be used 
+                for actual clinical diagnosis or patient care. Always consult qualified healthcare 
+                professionals for medical advice and interpretation of laboratory results.
+            </div>
         </div>
     </div>
 
     <script>
-        // Normal ranges for reference
-        const normalRanges = {
-            alt: { min: 7, max: 55, name: 'ALT' },
-            ast: { min: 8, max: 48, name: 'AST' },
-            alp: { min: 40, max: 129, name: 'ALP' },
-            bili: { min: 0, max: 1.2, name: 'Total Bilirubin' },
-            dbili: { min: 0, max: 0.3, name: 'Direct Bilirubin' },
-            albumin: { min: 3.5, max: 5.0, name: 'Albumin' },
-            ggt: { min: 8, max: 61, name: 'GGT' }
+        // Reference ranges
+        const ranges = {
+            alt: { min: 7, max: 55, female_max: 45 },
+            ast: { min: 8, max: 48, female_max: 43 },
+            alp: { min: 40, max: 129, female_min: 35, female_max: 104 },
+            bilirubin: { max: 1.2 },
+            directBili: { max: 0.3 },
+            albumin: { min: 3.5, max: 5.0 },
+            protein: { min: 6.0, max: 8.5 },
+            ggt: { min: 8, max: 61, female_min: 5, female_max: 36 }
         };
-
+        
         // Initialize sliders
         const sliders = {
             alt: document.getElementById('alt-slider'),
             ast: document.getElementById('ast-slider'),
             alp: document.getElementById('alp-slider'),
-            bili: document.getElementById('bili-slider'),
-            dbili: document.getElementById('dbili-slider'),
+            bilirubin: document.getElementById('bilirubin-slider'),
+            directBili: document.getElementById('direct-bili-slider'),
             albumin: document.getElementById('albumin-slider'),
+            protein: document.getElementById('protein-slider'),
             ggt: document.getElementById('ggt-slider')
         };
-
-        const valueDisplays = {
-            alt: document.getElementById('alt-value'),
-            ast: document.getElementById('ast-value'),
-            alp: document.getElementById('alp-value'),
-            bili: document.getElementById('bili-value'),
-            dbili: document.getElementById('dbili-value'),
-            albumin: document.getElementById('albumin-value'),
-            ggt: document.getElementById('ggt-value')
-        };
-
-        // Update value display and color coding
-        function updateValue(test) {
-            const slider = sliders[test];
-            const value = parseFloat(slider.value);
-            const display = valueDisplays[test];
-            const range = normalRanges[test];
-
-            // Update display text
-            if (test === 'bili' || test === 'dbili' || test === 'albumin') {
-                display.textContent = value.toFixed(1) + (test === 'albumin' ? ' g/dL' : ' mg/dL');
-            } else {
-                display.textContent = Math.round(value) + ' U/L';
-            }
-
-            // Update color based on normal range
-            if (value < range.min) {
-                display.className = 'test-value abnormal-low';
-            } else if (value > range.max) {
-                display.className = 'test-value abnormal-high';
-            } else {
-                display.className = 'test-value normal';
-            }
-
-            // Generate differential diagnosis
-            generateDifferential();
-        }
-
-        // Generate differential diagnosis based on pattern recognition
-        function generateDifferential() {
+        
+        // Add event listeners
+        Object.keys(sliders).forEach(key => {
+            sliders[key].addEventListener('input', updateValues);
+        });
+        
+        function updateValues() {
             const values = {
                 alt: parseFloat(sliders.alt.value),
                 ast: parseFloat(sliders.ast.value),
                 alp: parseFloat(sliders.alp.value),
-                bili: parseFloat(sliders.bili.value),
-                dbili: parseFloat(sliders.dbili.value),
+                bilirubin: parseFloat(sliders.bilirubin.value),
+                directBili: parseFloat(sliders.directBili.value),
                 albumin: parseFloat(sliders.albumin.value),
+                protein: parseFloat(sliders.protein.value),
                 ggt: parseFloat(sliders.ggt.value)
             };
-
-            const differentials = [];
             
-            // Calculate AST/ALT ratio
-            const astAltRatio = values.ast / values.alt;
+            // Update display values
+            document.getElementById('alt-value').textContent = values.alt + ' U/L';
+            document.getElementById('ast-value').textContent = values.ast + ' U/L';
+            document.getElementById('alp-value').textContent = values.alp + ' U/L';
+            document.getElementById('bilirubin-value').textContent = values.bilirubin.toFixed(1) + ' mg/dL';
+            document.getElementById('direct-bili-value').textContent = values.directBili.toFixed(1) + ' mg/dL';
+            document.getElementById('albumin-value').textContent = values.albumin.toFixed(1) + ' g/dL';
+            document.getElementById('protein-value').textContent = values.protein.toFixed(1) + ' g/dL';
+            document.getElementById('ggt-value').textContent = values.ggt + ' U/L';
             
-            // Check for normal pattern
-            const allNormal = Object.keys(values).every(key => {
-                const range = normalRanges[key];
-                return values[key] >= range.min && values[key] <= range.max;
-            });
-
-            if (allNormal) {
-                differentials.push({
-                    title: 'Normal Liver Function',
-                    description: 'All values are within normal limits. No evidence of hepatocellular injury, cholestasis, or synthetic dysfunction.'
-                });
+            // Update colors
+            updateColor('alt-value', values.alt, ranges.alt.min, ranges.alt.max);
+            updateColor('ast-value', values.ast, ranges.ast.min, ranges.ast.max);
+            updateColor('alp-value', values.alp, ranges.alp.min, ranges.alp.max);
+            updateColor('bilirubin-value', values.bilirubin, 0, ranges.bilirubin.max);
+            updateColor('direct-bili-value', values.directBili, 0, ranges.directBili.max);
+            updateColor('albumin-value', values.albumin, ranges.albumin.min, ranges.albumin.max);
+            updateColor('protein-value', values.protein, ranges.protein.min, ranges.protein.max);
+            updateColor('ggt-value', values.ggt, ranges.ggt.min, ranges.ggt.max);
+            
+            // Calculate ratios
+            const astAltRatio = values.alt > 0 ? (values.ast / values.alt).toFixed(2) : '0.00';
+            const biliRatio = values.bilirubin > 0 ? ((values.directBili / values.bilirubin) * 100).toFixed(0) : '0';
+            
+            document.getElementById('ast-alt-ratio').textContent = astAltRatio;
+            document.getElementById('bili-ratio').textContent = biliRatio + '%';
+            
+            // Update interpretation
+            updateInterpretation(values, astAltRatio, biliRatio);
+        }
+        
+        function updateColor(elementId, value, min, max) {
+            const element = document.getElementById(elementId);
+            if (value >= min && value <= max) {
+                element.className = 'test-value normal';
             } else {
-                // Acute viral hepatitis pattern
-                if (values.alt > 500 || values.ast > 500) {
-                    if (values.alt >= values.ast) {
-                        differentials.push({
-                            title: 'Acute Viral Hepatitis',
-                            description: 'Marked elevation of aminotransferases (>10x normal) with ALT ≥ AST suggests acute viral hepatitis (HAV, HBV, HCV, HEV). Associated with hepatocellular injury pattern. May also see elevated bilirubin.'
-                        });
-                    }
-                    if (values.alt > 1000 || values.ast > 1000) {
-                        differentials.push({
-                            title: 'Acute Liver Injury/Ischemic Hepatitis',
-                            description: 'Massive elevation of aminotransferases (>20x normal) suggests acute liver necrosis. Consider ischemic hepatitis (shock liver), acetaminophen toxicity, or severe viral hepatitis.'
-                        });
-                    }
-                }
-
-                // Alcoholic hepatitis pattern
-                if (astAltRatio > 2 && values.ast > normalRanges.ast.max && values.ast < 300 && values.ggt > normalRanges.ggt.max) {
-                    differentials.push({
-                        title: 'Alcoholic Hepatitis',
-                        description: 'AST:ALT ratio >2 with modest elevation of AST (<300 U/L) and elevated GGT is characteristic of alcoholic liver disease. AST rarely exceeds 8x upper limit of normal.'
-                    });
-                }
-
-                // Cholestatic pattern
-                if (values.alp > normalRanges.alp.max * 2 && values.ggt > normalRanges.ggt.max * 2) {
-                    if (values.bili > normalRanges.bili.max && values.dbili > normalRanges.dbili.max) {
-                        differentials.push({
-                            title: 'Obstructive Jaundice/Cholestasis',
-                            description: 'Elevated ALP and GGT with hyperbilirubinemia (predominantly direct) suggests biliary obstruction (stones, stricture, malignancy) or intrahepatic cholestasis (PBC, PSC, drug-induced).'
-                        });
+                element.className = 'test-value abnormal';
+            }
+        }
+        
+        function updateInterpretation(values, astAltRatio, biliRatio) {
+            let pattern = '';
+            let differentials = [];
+            
+            const altElevated = values.alt > ranges.alt.max;
+            const astElevated = values.ast > ranges.ast.max;
+            const alpElevated = values.alp > ranges.alp.max;
+            const bilirubinElevated = values.bilirubin > ranges.bilirubin.max;
+            const directBiliElevated = values.directBili > ranges.directBili.max;
+            const albuminLow = values.albumin < ranges.albumin.min;
+            const ggtElevated = values.ggt > ranges.ggt.max;
+            
+            // Pattern Analysis
+            if (!altElevated && !astElevated && !alpElevated && !bilirubinElevated) {
+                pattern = '✓ All values within normal limits';
+            } else {
+                // Hepatocellular pattern
+                if ((altElevated || astElevated) && !alpElevated) {
+                    pattern = '<strong>Hepatocellular Pattern:</strong> Elevated transaminases with normal/mildly elevated ALP suggests liver cell injury.';
+                    
+                    // AST/ALT ratio analysis
+                    if (parseFloat(astAltRatio) > 2) {
+                        differentials.push('Alcoholic hepatitis (AST/ALT ratio > 2)');
+                        differentials.push('Cirrhosis');
+                    } else if (parseFloat(astAltRatio) >= 1) {
+                        differentials.push('Viral hepatitis (ALT ≥ AST)');
+                        differentials.push('Autoimmune hepatitis');
+                        differentials.push('Drug-induced liver injury');
                     } else {
-                        differentials.push({
-                            title: 'Cholestasis without Jaundice',
-                            description: 'Isolated elevation of ALP and GGT without hyperbilirubinemia. Consider early biliary obstruction, infiltrative diseases (metastases, granulomas), or drug-induced cholestasis.'
-                        });
+                        differentials.push('Acute viral hepatitis (ALT >> AST)');
+                        differentials.push('Non-alcoholic fatty liver disease (NAFLD)');
                     }
                 }
-
-                // Chronic liver disease/cirrhosis pattern
-                if (values.albumin < normalRanges.albumin.min && values.bili > normalRanges.bili.max) {
-                    if (values.alt > normalRanges.alt.max || values.ast > normalRanges.ast.max) {
-                        differentials.push({
-                            title: 'Chronic Liver Disease/Cirrhosis',
-                            description: 'Low albumin with elevated bilirubin suggests synthetic dysfunction. Associated mild-moderate elevation of aminotransferases indicates ongoing hepatocellular injury. Consider decompensated cirrhosis.'
-                        });
+                
+                // Cholestatic pattern
+                else if (alpElevated && (ggtElevated || bilirubinElevated)) {
+                    pattern = '<strong>Cholestatic Pattern:</strong> Elevated ALP with GGT or bilirubin suggests biliary obstruction or cholestasis.';
+                    
+                    if (parseFloat(biliRatio) > 50) {
+                        differentials.push('Post-hepatic jaundice (obstructive):');
+                        differentials.push('• Choledocholithiasis (gallstones)');
+                        differentials.push('• Pancreatic cancer');
+                        differentials.push('• Primary biliary cholangitis');
+                        differentials.push('• Primary sclerosing cholangitis');
+                    } else {
+                        differentials.push('Intrahepatic cholestasis');
+                        differentials.push('Drug-induced cholestasis');
                     }
                 }
-
-                // Isolated hyperbilirubinemia
-                if (values.bili > normalRanges.bili.max && values.dbili <= normalRanges.dbili.max &&
-                    values.alt <= normalRanges.alt.max && values.ast <= normalRanges.ast.max &&
-                    values.alp <= normalRanges.alp.max) {
-                    differentials.push({
-                        title: 'Unconjugated Hyperbilirubinemia',
-                        description: 'Isolated elevation of indirect bilirubin with normal liver enzymes. Consider hemolysis, Gilbert syndrome, or Crigler-Najjar syndrome.'
-                    });
+                
+                // Mixed pattern
+                else if ((altElevated || astElevated) && alpElevated) {
+                    pattern = '<strong>Mixed Pattern:</strong> Elevated transaminases and ALP suggests combined hepatocellular and cholestatic injury.';
+                    differentials.push('Chronic liver disease');
+                    differentials.push('Infiltrative liver disease');
+                    differentials.push('Sepsis');
                 }
-
-                // Drug-induced liver injury pattern
-                if ((values.alt > normalRanges.alt.max * 3 || values.alp > normalRanges.alp.max * 2) &&
-                    values.alt < 1000 && values.ast < 1000) {
-                    differentials.push({
-                        title: 'Drug-Induced Liver Injury (DILI)',
-                        description: 'Moderate elevation of aminotransferases or cholestatic enzymes. Pattern depends on the offending agent - hepatocellular (high ALT/AST), cholestatic (high ALP/GGT), or mixed.'
-                    });
+                
+                // Bilirubin predominant
+                if (bilirubinElevated && !altElevated && !astElevated && !alpElevated) {
+                    if (parseFloat(biliRatio) < 20) {
+                        pattern = '<strong>Unconjugated Hyperbilirubinemia:</strong> Elevated total bilirubin with low direct bilirubin suggests pre-hepatic cause.';
+                        differentials = [
+                            'Pre-hepatic jaundice:',
+                            '• Hemolytic anemia',
+                            '• Gilbert syndrome',
+                            '• Crigler-Najjar syndrome'
+                        ];
+                    } else {
+                        pattern = '<strong>Conjugated Hyperbilirubinemia:</strong> Elevated direct bilirubin suggests hepatic or post-hepatic cause.';
+                        differentials.push('Dubin-Johnson syndrome');
+                        differentials.push('Rotor syndrome');
+                    }
                 }
-
-                // Autoimmune hepatitis pattern
-                if (values.alt > normalRanges.alt.max * 5 && values.alt < 1000 &&
-                    values.albumin < normalRanges.albumin.min) {
-                    differentials.push({
-                        title: 'Autoimmune Hepatitis',
-                        description: 'Moderate to marked elevation of aminotransferases with evidence of synthetic dysfunction (low albumin). Often associated with elevated globulins (not shown). Requires autoantibody testing.'
-                    });
-                }
-
-                // Non-alcoholic fatty liver disease
-                if (values.alt > normalRanges.alt.max && values.alt < 300 &&
-                    values.ast > normalRanges.ast.max && values.ast < 300 &&
-                    astAltRatio < 1) {
-                    differentials.push({
-                        title: 'Non-Alcoholic Fatty Liver Disease (NAFLD)',
-                        description: 'Mild to moderate elevation of aminotransferases with ALT > AST. Common in metabolic syndrome, obesity, and diabetes. GGT may be mildly elevated.'
-                    });
-                }
-
-                // Isolated ALP elevation
-                if (values.alp > normalRanges.alp.max * 1.5 &&
-                    values.ggt <= normalRanges.ggt.max &&
-                    values.alt <= normalRanges.alt.max) {
-                    differentials.push({
-                        title: 'Non-Hepatic ALP Elevation',
-                        description: 'Isolated ALP elevation with normal GGT suggests bone origin (Paget disease, bone metastases, fractures) or pregnancy (placental ALP). Consider fractionation to determine source.'
-                    });
+                
+                // Synthetic dysfunction
+                if (albuminLow) {
+                    if (pattern) pattern += '<br><br>';
+                    pattern += '<strong>Synthetic Dysfunction:</strong> Low albumin suggests chronic liver disease or decreased hepatic synthesis.';
+                    if (!differentials.some(d => d.includes('Chronic liver disease'))) {
+                        differentials.push('Chronic liver disease/Cirrhosis');
+                        differentials.push('Malnutrition');
+                        differentials.push('Nephrotic syndrome');
+                    }
                 }
             }
-
-            // Update the differential diagnosis display
-            const differentialDiv = document.getElementById('differential-diagnosis');
+            
+            document.getElementById('pattern-analysis').innerHTML = pattern;
+            
+            const diffList = document.getElementById('differential-list');
+            diffList.innerHTML = '';
             if (differentials.length === 0) {
-                differentialDiv.innerHTML = `
-                    <ul class="differential-list">
-                        <li class="differential-item">
-                            <h3>Non-specific Pattern</h3>
-                            <p>The current combination of values doesn't match a classic pattern. Consider repeating tests, checking for trends, and correlating with clinical presentation.</p>
-                        </li>
-                    </ul>
-                `;
+                diffList.innerHTML = '<li>No abnormalities detected</li>';
             } else {
-                differentialDiv.innerHTML = `
-                    <ul class="differential-list">
-                        ${differentials.map(diff => `
-                            <li class="differential-item">
-                                <h3>${diff.title}</h3>
-                                <p>${diff.description}</p>
-                            </li>
-                        `).join('')}
-                    </ul>
-                `;
+                differentials.forEach(diff => {
+                    const li = document.createElement('li');
+                    li.textContent = diff;
+                    diffList.appendChild(li);
+                });
             }
         }
-
-        // Reset all values to normal
+        
         function resetValues() {
-            sliders.alt.value = 40;
-            sliders.ast.value = 35;
-            sliders.alp.value = 90;
-            sliders.bili.value = 1.0;
-            sliders.dbili.value = 0.2;
+            sliders.alt.value = 30;
+            sliders.ast.value = 25;
+            sliders.alp.value = 80;
+            sliders.bilirubin.value = 0.8;
+            sliders.directBili.value = 0.2;
             sliders.albumin.value = 4.0;
-            sliders.ggt.value = 40;
-
-            Object.keys(sliders).forEach(test => updateValue(test));
+            sliders.protein.value = 7.0;
+            sliders.ggt.value = 30;
+            updateValues();
         }
-
-        // Add event listeners to all sliders
-        Object.keys(sliders).forEach(test => {
-            sliders[test].addEventListener('input', () => updateValue(test));
-        });
-
-        // Initialize display
-        Object.keys(sliders).forEach(test => updateValue(test));
+        
+        // Initialize on load
+        updateValues();
     </script>
 </body>
 </html>
